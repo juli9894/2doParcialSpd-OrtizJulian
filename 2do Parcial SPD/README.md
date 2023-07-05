@@ -47,4 +47,4 @@ La misma obtiene la temperatura del ambiente, necesaria para accionar todos los 
 - [ProyectoSistemaDeIncendios](https://www.tinkercad.com/things/cj74DD99GCz-2do-parcial-spd-ortiz-julian/editel?sharecode=QI7dvXrKGvJYSEOya7offppAgA9XnaaDT6DKT0bqQ40)
 
 ## Link código GDB
-- [CodigoGDB](https://onlinegdb.com/88tMpteIU)
+- [CodigoGDB](https://onlinegdb.com/SWDibtL6B)
