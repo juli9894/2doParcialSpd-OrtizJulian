@@ -23,11 +23,11 @@ El dispositivo puede apagarse mediante la tecla stop del control remoto en cualq
 funciona permanentemente mientras el dispositivo está conectado. 
 
 Consta de:
-  *Receptor infrarojo para su encencido y apagado.
-  *Sensor de temperatura.
-  *Luces led indicadoras titilantes (Verde: Normal, Rojo: Alerta).
-  *Display indicador de temperatura y estacion del año.
-  *Servomotor (Simula el sistema contra propagacion de incendio).
+  - Receptor infrarojo para su encencido y apagado.
+  - Sensor de temperatura.
+  - Luces led indicadoras titilantes (Verde: Normal, Rojo: Alerta).
+  - Display indicador de temperatura y estacion del año.
+  - Servomotor (Simula el sistema contra propagacion de incendio).
 
 ## Función principal
 Esta funcion es la que se ejecuta al encender el sistema via control remoto.
