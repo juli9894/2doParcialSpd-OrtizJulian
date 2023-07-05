@@ -1,0 +1,170 @@
+#include <Servo.h>
+#include <IRremote.h>
+#include <LiquidCrystal.h>
+
+#define RS 7
+#define E 6
+#define D4 5
+#define D5 4
+#define D6 3
+#define D7 2
+#define A0 14
+#define rojo 19
+#define verde 18
+#define servo 9
+#define RECEPTOR 11
+#define tecla_1 0xFF00BF00
+#define tecla_2 0xFD02BF00
+
+// Servo
+Servo servoMotor;
+// Control IR
+IRrecv irrecv(RECEPTOR);
+decode_results irResults;
+bool sistema_Encendido = false;
+// Display
+LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
+
+void setup()
+{
+    Serial.begin(9600);
+    IrReceiver.begin(RECEPTOR, DISABLE_LED_FEEDBACK); // Inicializa el receptor IR
+    for(int i = 18; i <= 19; i++)
+    {
+      pinMode(i, OUTPUT);
+    }
+    servoMotor.attach(servo); // Inicializa el servo
+    lcd.begin(16, 2); // Inicializa el display
+}
+
+void loop()
+{
+    if (IrReceiver.decode()) // Escucha el receptor IR
+    {
+      Serial.println(IrReceiver.decodedIRData.decodedRawData, HEX);
+      IrReceiver.resume();
+
+      switch (IrReceiver.decodedIRData.decodedRawData)
+      {
+        case tecla_1:
+          sistema_Encendido = true;
+        break;
+        case tecla_2:
+          sistema_Encendido = false;
+        break;
+      }
+    }
+  	if(sistema_Encendido)
+    {
+      encender_sistema();
+    }
+}
+
+void encender_sistema()
+{
+    float lectura = analogRead(A0);
+    float temperatura = map(lectura, 20, 358, -40, 125);
+    char* estacion = Determinar_Estacion(temperatura);
+    mostrar_en_display(estacion, temperatura);
+}
+
+void apagar_sistema()
+{
+  	lcd.clear();
+  	mover_servo(90);
+  	
+}
+
+char* Determinar_Estacion(float temperatura)
+{
+    if (temperatura >= 60)
+    {
+      return "TEMPERATURA EXTREMA";
+    }
+    else if (temperatura >= 30)
+    {
+      return "VERANO";
+    }
+    else if (temperatura >= 20)
+    {
+      return "PRIMAVERA";
+    }
+    else if (temperatura >= 10)
+    {
+      return "OTONO";
+    }
+    else
+    {
+      return "INVIERNO";
+    }
+}
+
+void mostrar_en_display(char* estacion, float temperatura)
+{
+    if (temperatura < 60)
+    {
+      lcd.setCursor(0,0);
+      lcd.print("EST: ");
+      lcd.print(estacion);
+      lcd.setCursor(0,1);
+      lcd.print("TEMP: ");
+      lcd.print(temperatura,1);
+      lcd.print(" C°");
+      encender_led(verde);
+    }
+    else
+    {
+      lcd.setCursor(0, 0);
+      lcd.print("ALERTA!!! TEMP");
+      lcd.setCursor(0, 1);
+      lcd.print("EXTREMA: ");
+      lcd.print(temperatura,1);
+      lcd.print(" C°");
+      encender_led(rojo);
+    }
+	
+   	apagar_sistema();
+}
+
+void encender_led(int color)
+{
+    if (color == verde)
+    {
+      mover_servo(90);
+      for (int i = 0; i < 1; i++)
+      {
+        digitalWrite(color, HIGH);
+        delay(1000);
+        digitalWrite(color, LOW);
+        delay(1000);
+      }
+    }
+    else
+    {
+      for (int i = 0; i < 1; i++)
+      {
+        digitalWrite(color, HIGH);
+        mover_servo(45);
+        delay(500);
+        digitalWrite(color, LOW);
+        mover_servo(135);
+        delay(500);
+      }
+    }
+}
+
+void mover_servo(int grados)
+{
+    switch(grados)
+    {
+      case 45:
+          servoMotor.write(grados);
+          break;
+      case 90:
+          servoMotor.write(grados);
+          break;
+      case 135:
+          servoMotor.write(grados);
+          break;
+    }
+}
